@@ -16,7 +16,7 @@ def fetch_raw_animal_data():
     """
     url = "https://api.api-ninjas.com/v1/animals"
     params = {"name": "a"}
-    headers = {"X_Api_Key": Variable.get("X_Api_Key")}
+    headers = {"X-Api-Key": Variable.get("X-Api-Key")}
     
     try:
         response = requests.get(url, params=params, headers=headers)
