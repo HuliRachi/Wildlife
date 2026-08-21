@@ -15,7 +15,6 @@ def insert_rows(cur, conn, schema, row):
                 row,
             )
         else:
-            # FIX: Reads from clean JSON keys, maps them cleanly to core database columns
             cur.execute(
                 f"""
                 INSERT INTO {schema}.{table}("Name", "animal_class", "animal_diet", "animal_family", "animal_group", "animal_color", "animal_lifespan")
@@ -47,7 +46,6 @@ def update_rows(cur, conn, schema, row):
                 row,
             )
         else:
-            # FIX: Reads from clean JSON keys, updates core database columns
             cur.execute(
                 f"""
                 UPDATE {schema}.{table}

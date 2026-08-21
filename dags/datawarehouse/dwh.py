@@ -27,17 +27,14 @@ def staging_table():
         create_schema(schema)
         create_table(schema)
 
-        # FIX: Get current IDs and turn them into a set for fast lookup
         table_ids = set(get_video_ids(cur, schema))
 
         for row in Animal_data:
-            # FIX: Check each animal individually instead of checking table length
             if row["name"] in table_ids:
                 update_rows(cur, conn, schema, row)
             else:
                 insert_rows(cur, conn, schema, row)
 
-        # FIX: Only delete rows if they are truly missing from the source JSON
         ids_in_json = {row["name"] for row in Animal_data}
         ids_to_delete = table_ids - ids_in_json
 
@@ -65,11 +62,9 @@ def core_table():
         create_schema(schema)
         create_table(schema)
 
-        # Get existing IDs from the core table
         table_ids = set(get_video_ids(cur, schema))
         current_animal_names = set()
 
-        # FIX: Select matching uppercase name keys from staging to match parameters
         cur.execute(f'SELECT "Name" AS name, "class", "diet", "family", "group", "color", "lifespan" FROM staging.{table};')
         rows = cur.fetchall()
 
@@ -77,13 +72,11 @@ def core_table():
             animal_name = row["name"]
             current_animal_names.add(animal_name)
 
-            # Independent validation check for processing core data rows
             if animal_name in table_ids:
                 update_rows(cur, conn, schema, row)
             else:
                 insert_rows(cur, conn, schema, row)
 
-        # Reconcile historical deletes between staging and core rows safely
         ids_to_delete = table_ids - current_animal_names
 
         if ids_to_delete:
