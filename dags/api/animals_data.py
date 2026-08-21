@@ -2,14 +2,21 @@ from datetime import date
 import os
 import json
 import requests
+# from dotenv import load_dotenv
+# import os
+# load_dotenv(dotenv_path=".env")
 
+from airflow.decorators import task
+from airflow.models import Variable
+
+@task
 def fetch_raw_animal_data():
     """
     Fetches raw animal data from the API Ninjas endpoint.
     """
     url = "https://api.api-ninjas.com/v1/animals"
     params = {"name": "a"}
-    headers = {"X-Api-Key": "orY1bpMUTsVZkFU3bFnqLtZPoWTLUbUscdVNN7e6"}
+    headers = {"X_Api_Key": Variable.get("X_Api_Key")}
     
     try:
         response = requests.get(url, params=params, headers=headers)
@@ -19,6 +26,7 @@ def fetch_raw_animal_data():
         print(f"Error fetching data: {e}")
         return []
 
+@task
 def extract_animal_data(raw_data_list):
     extracted_data = []
     
@@ -48,6 +56,7 @@ def extract_animal_data(raw_data_list):
         
     return extracted_data
 
+@task
 def save_to_json(extracted_data):
     os.makedirs("./data", exist_ok=True)
     
