@@ -10,7 +10,7 @@ from api.animals_data import (
 )
 
 from datawarehouse.dwh import staging_table, core_table
-# from dataquality.soda import yt_elt_data_quality
+from dataquality.soda import animal_data_quality
 
 local_tz = pendulum.timezone("Africa/Johannesburg")
 
@@ -57,9 +57,22 @@ with DAG(
     update_staging = staging_table()
     update_core = core_table()
 
-    # trigger_data_quality = TriggerDagRunOperator(
-    #     task_id="trigger_data_quality",
-    #     trigger_dag_id="data_quality",
-    # )
+    trigger_data_quality = TriggerDagRunOperator(
+        task_id="trigger_data_quality",
+        trigger_dag_id="data_quality",
+    )
 
-    update_staging >> update_core # >> trigger_data_quality
+    update_staging >> update_core >> trigger_data_quality
+
+with DAG(
+    dag_id="data_quality",
+    default_args=default_args,
+    description="DAG to check the data quality on both layers in the database",
+    catchup=False,
+    schedule=None,
+) as dag_quality:
+    
+    soda_validate_staging = animal_data_quality(staging_schema)
+    soda_validate_core = animal_data_quality(core_schema)
+
+    soda_validate_staging >> soda_validate_core

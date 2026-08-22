@@ -1,0 +1,32 @@
+checks for staging.yt_api:
+  - missing_count("Name") = 0
+  - missing_count("class") = 0
+  - missing_count("diet") = 0
+  - duplicate_count("Name") <= 10
+
+  - invalid_lifespan_records <= 10:
+      name: Check for blank or zero lifespans
+      invalid_lifespan_records query: |
+        SELECT COUNT(*) 
+        FROM staging.yt_api 
+        WHERE "lifespan" IS NULL OR TRIM("lifespan") = '' OR "lifespan" LIKE '0%'
+
+checks for core.yt_api:
+  - missing_count("Name") = 0
+  - missing_count("animal_class") = 0
+  - missing_count("animal_family") = 0
+  - duplicate_count("Name") <= 10
+
+  - numbers_in_text_categories = 0:
+      name: Check for numbers inside class or family text fields
+      numbers_in_text_categories query: |
+        SELECT COUNT(*) 
+        FROM core.yt_api 
+        WHERE "animal_class" ~ '[0-9]' OR "animal_family" ~ '[0-9]'
+
+  - invalid_diet_categories = 0:
+      name: Check for illegal values in animal diet column
+      invalid_diet_categories query: |
+        SELECT COUNT(*) 
+        FROM core.yt_api 
+        WHERE "animal_diet" NOT IN ('Herbivore', 'Carnivore', 'Omnivore', 'Unknown')
