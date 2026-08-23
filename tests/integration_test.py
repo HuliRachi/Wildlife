@@ -12,7 +12,7 @@ def test_animal_api_integration():
     url = "https://api.api-ninjas.com/v1/animals"
     params = {"name": "a"}
     
-    headers = {"X-Api-Key": Variable.get("X-Api-Key")}
+    headers = {"X-Api-Key": Variable.get("X_Api_Key")}
 
     try:
         response = requests.get(url, params=params, headers=headers)
