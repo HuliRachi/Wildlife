@@ -4,27 +4,6 @@ import psycopg2
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.models import Variable
 
-# def test_animal_api_integration():
-#     """
-#     Integration Test: Connects to the real live API Ninjas server
-#     using the real Airflow Variable token to ensure access works.
-#     """
-#     url = "https://api.api-ninjas.com/v1/animals"
-#     params = {"name": "a"}
-    
-#     headers = {"X-Api-Key": Variable.get("X_Api_Key")}
-
-#     try:
-#         response = requests.get(url, params=params, headers=headers)
-        
-#         assert response.status_code == 200
-        
-#         data = response.json()
-#         assert len(data) > 0
-        
-#     except requests.RequestException as e:
-#         pytest.fail(f"Live network request to API Ninjas failed: {e}")
-
 @pytest.fixture(scope="function")
 def real_postgres_connection():
     """
