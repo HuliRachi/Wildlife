@@ -1,12 +1,14 @@
-name: Rachi CI-CD Pipeline
+name: Rachi-Huli CI-CD Pipeline
 
 on:
-  branches:
-    - main
-    - 'feature/*'
+  push:
+    branches:
+      - main
+      - 'feature/*'
   pull_request:
-    - main
-    - 'feature/*'
+    branches:
+      - main
+      - 'feature/*'
   workflow_dispatch:
 
 jobs:
